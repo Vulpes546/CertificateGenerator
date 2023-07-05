@@ -3,10 +3,6 @@ import * as XLSX from "xlsx";
 import "./App.css";
 
 function App() {
-	// let reader = null;
-	// useEffect(() => {
-	// 	reader = new FileReader();
-	// }, []);
 	function handleUpload(e) {
 		const reader = new FileReader();
 		reader.readAsBinaryString(e.target.files[0]);
@@ -21,10 +17,7 @@ function App() {
 	}
 	return (
 		<>
-			<form>
-				<input id="upload" type="file" name="files[]" onChange={handleUpload} />
-				<button>Submit</button>
-			</form>
+			<input id="upload" type="file" name="files[]" onChange={handleUpload} />
 		</>
 	);
 }
