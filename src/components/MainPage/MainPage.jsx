@@ -1,4 +1,4 @@
-import "./css/MainPage.css";
+import "./MainPage.css";
 import * as XLSX from "xlsx";
 
 export default function MainPage() {
