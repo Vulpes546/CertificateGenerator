@@ -1,0 +1,18 @@
+main {
+	display: grid;
+	grid-template: auto auto / 1fr 1fr;
+	grid-template-areas: "upload upload" "btnLeft btnRight";
+	gap: 10px;
+}
+
+.upload {
+	grid-area: upload;
+}
+
+.btnLeft {
+	grid-area: btnLeft;
+}
+
+.btnRight {
+	grid-area: btnRight;
+}

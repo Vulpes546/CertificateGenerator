@@ -36,14 +36,15 @@ export default function MainPage() {
 		};
 	}
 	return (
-		<>
+		<main>
 			<input
+				className="upload"
 				id="upload"
 				type="file"
 				name="files[]"
 				onChange={handleUpload}
 				accept=".csv, .xls, .xlsx"
 			/>
-		</>
+		</main>
 	);
 }
