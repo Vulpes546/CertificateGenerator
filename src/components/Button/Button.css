@@ -10,3 +10,12 @@
 	cursor: pointer;
 	transition: background-color 0.1s ease;
 }
+
+.button:hover {
+	background-color: #3e8e41;
+}
+
+.button:disabled {
+	background-color: #cccccc;
+	cursor: not-allowed;
+}
