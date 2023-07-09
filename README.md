@@ -16,3 +16,11 @@ To run development server:
 ```bash
 npm run dev
 ```
+
+To build project:
+- run `npm run build` command
+- copy
+  - the data directory
+  - contents of the dist folder
+    
+  to your http server's catalogue
