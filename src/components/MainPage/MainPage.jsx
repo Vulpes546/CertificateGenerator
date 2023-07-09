@@ -98,6 +98,7 @@ export default function MainPage() {
 			case 302:
 				return "Generowanie pliku .zip nie powiodło się";
 		}
+		return "Nie wybrano pliku";
 	};
 
 	return (
