@@ -2,12 +2,13 @@ import { generateZip } from "./generateZip";
 
 export default async function downloadZip(
 	files: any,
-	setState: (state: any) => void
+	setState: (state: any) => void,
+	data: any[]
 ) {
 	setState((state) => ({ ...state, statusCode: 301 }));
 	try {
 		document.createElement("a");
-		const zip = await generateZip(files);
+		const zip = await generateZip(files, data);
 		const url = window.URL.createObjectURL(zip);
 		const link = document.createElement("a");
 		link.href = url;

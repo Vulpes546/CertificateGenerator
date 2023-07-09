@@ -120,7 +120,7 @@ export default function MainPage() {
 			<Button
 				text="Pobierz plik .zip"
 				className="btnRight"
-				clickHandler={() => downloadZip(state.pdfs, setState)}
+				clickHandler={() => downloadZip(state.pdfs, setState, state.data)}
 				disabled={
 					state.statusCode !== 200 && state.statusCode !== 300 ? true : false
 				}
