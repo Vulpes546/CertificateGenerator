@@ -17,7 +17,7 @@ To run development server:
 npm run dev
 ```
 
-To build project:
+To build the project:
 - run `npm run build` command
 - copy
   - the data directory
