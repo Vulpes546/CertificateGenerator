@@ -81,6 +81,42 @@ export default async function generatePdf(data) {
 		font: bahnschriftFont,
 		color: rgb(0.5, 0.5, 0.5),
 	});
+
+	// date of issue
+
+	let today = "";
+
+	const date = new Date();
+
+	const monthNames = [
+		"stycznia",
+		"lutego",
+		"marca",
+		"kwietnia",
+		"maja",
+		"czerwca",
+		"lipca",
+		"sierpnia",
+		"września",
+		"października",
+		"listopada",
+		"grudnia",
+	];
+
+	fontSize = 11;
+	firstPage.drawText(
+		`Toruń, ${date.getDate()} ${
+			monthNames[date.getMonth()]
+		} ${date.getFullYear()} r.`,
+		{
+			x: 400,
+			y: 60,
+			size: fontSize,
+			font: bahnschriftFont,
+			color: rgb(0.5, 0.5, 0.5),
+		}
+	);
+
 	const pdfBytes = await pdfDoc.save();
 	return pdfBytes;
 }
