@@ -2,11 +2,9 @@ import { PDFDocument } from "pdf-lib";
 import fontkit from "@pdf-lib/fontkit";
 import { rgb } from "pdf-lib";
 
-export default async function generatePdf(data) {
-	console.log("generating pdf");
+export default async function generatePdf(data: string[]) {
 	const url = "../../data/certyfikat_szablon_1_EZN_pusty.pdf";
 	const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer());
-	console.log(existingPdfBytes);
 	const pdfDoc = await PDFDocument.load(existingPdfBytes);
 	pdfDoc.registerFontkit(fontkit);
 	const pages = pdfDoc.getPages();

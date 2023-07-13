@@ -1,14 +1,15 @@
 import "./MainPage.css";
-import * as XLSX from "xlsx";
+import parseData from "../../functions/parseData";
 import generatePdfs from "../../functions/generatePdfs";
 import downloadZip from "../../functions/downloadZip";
 import Button from "../Button/Button";
 import { useState } from "react";
+import React from "react";
 
 export default function MainPage() {
 	const [state, setState] = useState({
 		pdfs: [],
-		data: [],
+		data: [] as string[][],
 		statusCode: 1,
 	});
 
@@ -16,7 +17,8 @@ export default function MainPage() {
 		status codes:
 			1 - no file uploaded
 			100 - file uploaded and validated
-			101 - file validation failed
+			101 - file validation and upload in progress
+			102 - file validation failed
 			200 - pdfs generated
 			201 - pdfs generation in progress
 			202 - pdfs generation failed
@@ -29,61 +31,32 @@ export default function MainPage() {
 		if (e.target.value === "") {
 			return setState((prevState) => ({ ...prevState, statusCode: 0 }));
 		}
-		const reader = new FileReader();
-		reader.readAsBinaryString(e.target.files[0]);
-		reader.onload = (ev) => {
-			const data = ev.target.result;
-			let parsedData;
-			let workbook;
-			let sheetName;
-			let sheet;
-			console.log(e.target.files[0].type);
-			switch (e.target.files[0].type) {
-				case "application/vnd.ms-excel":
-					workbook = XLSX.read(data, { type: "binary" });
-					sheetName = workbook.SheetNames[0];
-					sheet = workbook.Sheets[sheetName];
-					parsedData = XLSX.utils.sheet_to_json(sheet, { header: 1 });
-					break;
-				case "text/csv":
-					parsedData = data
-						.slice(data.indexOf("\n") + 1)
-						.split("\n")
-						.map((element) => element.split(","));
-
-					parsedData = parsedData.map((element) => {
-						return element.map((el) => {
-							return el.trim();
-						});
-					});
-					break;
-			}
-			if (parsedData[0].length === 11) {
-				if (
-					(parsedData[0][0] === "imię" || parsedData[0][0] === "imie") &&
-					parsedData[0][1] === "nazwisko"
-				) {
-					parsedData = parsedData.slice(1);
-					console.log(parsedData);
-				}
-				return setState((prevState) => ({
+		const file = e.target.files[0];
+		try {
+			setState((prevState) => ({ ...prevState, statusCode: 101 }));
+			parseData(file).then((res) => {
+				setState((prevState) => ({
 					...prevState,
-					data: parsedData,
 					statusCode: 100,
+					data: res,
 				}));
-			}
-			return setState((prevState) => ({ ...prevState, statusCode: 101 }));
-		};
+			});
+			return;
+		} catch (err) {
+			console.error(err);
+			return setState((prevState) => ({ ...prevState, statusCode: 102 }));
+		}
 	}
 
 	const renderStatus = () => {
-		console.log(state.statusCode);
 		switch (state.statusCode) {
 			case 1:
 				return "Nie wybrano pliku";
 			case 100:
 				return "Plik załadowany i zwalidowany";
 			case 101:
+				return "Weryfikacja pliku w toku";
+			case 102:
 				return "Plik niepoprawny";
 			case 200:
 				return "Pliki PDF wygenerowane";
