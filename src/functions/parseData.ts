@@ -3,11 +3,14 @@ import * as XLSX from "xlsx";
 export default function parseData(file: File): Promise<any[][]> {
 	return new Promise<any[][]>((resolve, reject) => {
 		const reader = new FileReader();
+		console.log("file reader initialized");
+		console.log(file.type);
 		reader.onload = (ev: ProgressEvent<FileReader>) => {
 			if (ev.target) {
 				const data: string = ev.target.result as string;
 				switch (file.type) {
 					case "application/vnd.ms-excel":
+						console.log("xls file");
 						const workbook = XLSX.read(data, { type: "binary" });
 						const sheetName = workbook.SheetNames[0];
 						const sheet = workbook.Sheets[sheetName];

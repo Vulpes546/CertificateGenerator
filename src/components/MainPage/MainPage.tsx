@@ -26,6 +26,8 @@ export default function MainPage() {
 			300 - zip file generated
 			301 - zip file generation in progress
 			302 - zip file generation failed
+			401 - fetching file in progress
+			402 - fetching file failed
 	**/
 
 	function handleUpload(e) {
@@ -50,25 +52,34 @@ export default function MainPage() {
 	}
 
 	function handleUrlChange(e) {
-		setState((prev) => ({...prev, url:e.target.value}))
+		setState((prev) => ({ ...prev, url: e.target.value }));
 	}
 
 	function fetchXlsx() {
-		setState((prev) => ({...prev, statusCode:101}))
-		try{
+		setState((prev) => ({ ...prev, statusCode: 401 }));
+		try {
 			fetch(state.url)
-			.then((res) => res.blob()) 
-			.then((blob) => {
-				const file = new File([blob], "data.xls")
-				return parseData(file)
-			})
-			.then(data => setState((prev) => ({...prev, data:data})))
-			.finally(() => setState((prev) => ({...prev, statusCode:100})))
+				.then((res) => {
+					console.log("Response recieved", res);
+					return res.blob();
+				})
+				.then((blob) => {
+					console.log("Blob generated", blob);
+					const file = new File([blob], "data.xls", {
+						type: "application/vnd.ms-excel",
+					});
+					console.log("File generated", file);
+					return parseData(file);
+				})
+				.then((data) => {
+					console.log("Data parsed", data);
+					return setState((prev) => ({ ...prev, data: data }));
+				})
+				.finally(() => setState((prev) => ({ ...prev, statusCode: 100 })));
+		} catch (error) {
+			console.error(error);
+			setState((prev) => ({ ...prev, statusCode: 402 }));
 		}
-		catch(error) {
-			console.error(error)
-			setState((prev) => ({...prev, statusCode:102}))
-		}	
 	}
 
 	const renderStatus = () => {
@@ -93,6 +104,10 @@ export default function MainPage() {
 				return "Generowanie pliku .zip w toku";
 			case 302:
 				return "Generowanie pliku .zip nie powiodło się";
+			case 401:
+				return "Pobieranie pliku";
+			case 402:
+				return "Pobieranie pliku nie powiodło się";
 		}
 		return "Nie wybrano pliku";
 	};
@@ -108,17 +123,19 @@ export default function MainPage() {
 				accept=".csv, .xls, .xlsx"
 			/>
 			<div id="urlForm">
-				<input 
+				<input
 					className="link"
 					id="link"
-					type="url" 
+					type="url"
 					name="url[]"
 					value={state.url}
 					onChange={handleUrlChange}
 				/>
-				<button value={state.url} onClick={fetchXlsx}>Pobierz</button>
+				<button value={state.url} onClick={fetchXlsx}>
+					Pobierz
+				</button>
 			</div>
-			
+
 			<p className="statusBar">{renderStatus()}</p>
 			<Button
 				text="Wygeneruj PDF"
