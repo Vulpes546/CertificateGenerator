@@ -1,9 +1,10 @@
 import generatePdf from "./generatePdf";
 
 export default async function generatePdfs(
-	data,
+	data: string[][],
 	setState: (state: any) => void
 ) {
+	console.log(data);
 	setState((state) => ({ ...state, statusCode: 201 }));
 	const pdfs: any[] = [];
 	try {

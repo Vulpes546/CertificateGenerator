@@ -18,7 +18,6 @@ export default async function downloadZip(
 		link.remove();
 		window.URL.revokeObjectURL(url);
 	} catch (error) {
-		console.error(error);
 		return setState((state) => ({ ...state, statusCode: 302 }));
 	}
 	return setState((state) => ({ ...state, statusCode: 300 }));
