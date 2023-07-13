@@ -1,12 +1,22 @@
 main {
 	display: grid;
 	grid-template: auto auto auto/ 1fr 1fr;
-	grid-template-areas: "upload upload" "status status" "btnLeft btnRight";
+	grid-template-areas: "upload upload" "link link" "status status" "btnLeft btnRight";
 	gap: 10px;
 }
 
 .upload {
 	grid-area: upload;
+}
+
+#urlForm {
+	display: flex;
+	grid-area: link;
+	gap: 5px;
+}
+
+.link {
+	flex-grow: 1;
 }
 
 .statusBar {

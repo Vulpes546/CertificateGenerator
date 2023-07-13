@@ -10,6 +10,7 @@ export default function MainPage() {
 	const [state, setState] = useState({
 		pdfs: [],
 		data: [] as string[][],
+		url: "" as string,
 		statusCode: 1,
 	});
 
@@ -48,6 +49,28 @@ export default function MainPage() {
 		}
 	}
 
+	function handleUrlChange(e) {
+		setState((prev) => ({...prev, url:e.target.value}))
+	}
+
+	function fetchXlsx() {
+		setState((prev) => ({...prev, statusCode:101}))
+		try{
+			fetch(state.url)
+			.then((res) => res.blob()) 
+			.then((blob) => {
+				const file = new File([blob], "data.xls")
+				return parseData(file)
+			})
+			.then(data => setState((prev) => ({...prev, data:data})))
+			.finally(() => setState((prev) => ({...prev, statusCode:100})))
+		}
+		catch(error) {
+			console.error(error)
+			setState((prev) => ({...prev, statusCode:102}))
+		}	
+	}
+
 	const renderStatus = () => {
 		switch (state.statusCode) {
 			case 1:
@@ -84,6 +107,18 @@ export default function MainPage() {
 				onChange={handleUpload}
 				accept=".csv, .xls, .xlsx"
 			/>
+			<div id="urlForm">
+				<input 
+					className="link"
+					id="link"
+					type="url" 
+					name="url[]"
+					value={state.url}
+					onChange={handleUrlChange}
+				/>
+				<button value={state.url} onClick={fetchXlsx}>Pobierz</button>
+			</div>
+			
 			<p className="statusBar">{renderStatus()}</p>
 			<Button
 				text="Wygeneruj PDF"
