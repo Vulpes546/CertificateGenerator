@@ -1,5 +1,7 @@
+import { PDFDocument } from "pdf-lib";
+
 export default interface IState {
-	pdfs: any[];
+	pdfs: PDFDocument[];
 	data: string[][];
 	url: string;
 	statusCode: number;
