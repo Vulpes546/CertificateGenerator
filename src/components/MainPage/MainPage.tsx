@@ -1,7 +1,7 @@
 import "./MainPage.css";
-import parseData from "../../functions/parseData";
-import generatePdfs from "../../functions/generatePdfs";
-import downloadZip from "../../functions/downloadZip";
+import parseData from "../../utils/parseData";
+import generatePdfs from "../../utils/generatePdfs";
+import downloadZip from "../../utils/downloadZip";
 import Button from "../Button/Button";
 import { useState } from "react";
 import React from "react";
