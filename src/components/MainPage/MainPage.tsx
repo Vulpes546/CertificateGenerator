@@ -3,9 +3,10 @@ import Button from "../Button/Button";
 import { useState } from "react";
 import React from "react";
 import Utils from "../../utils/Utils";
+import IState from "../../interfaces/IState";
 
 export default function MainPage() {
-	const [state, setState] = useState({
+	const [state, setState] = useState<IState>({
 		pdfs: [],
 		data: [] as string[][],
 		url: "" as string,

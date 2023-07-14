@@ -3,11 +3,13 @@ import fontkit from "@pdf-lib/fontkit";
 import { rgb } from "pdf-lib";
 import JSZip from "jszip";
 import * as XLSX from "xlsx";
+import { Dispatch, SetStateAction } from "react";
+import IState from "../interfaces/IState";
 
 export default class Utils {
 	static async downloadZip(
 		files: any,
-		setState: (state: any) => void,
+		setState: Dispatch<SetStateAction<IState>>,
 		data: any[]
 	) {
 		setState((state) => ({ ...state, statusCode: 301 }));
@@ -145,7 +147,10 @@ export default class Utils {
 		return pdfBytes;
 	}
 
-	static async generatePdfs(data: string[][], setState: (state: any) => void) {
+	static async generatePdfs(
+		data: string[][],
+		setState: Dispatch<SetStateAction<IState>>
+	) {
 		console.log(data);
 		setState((state) => ({ ...state, statusCode: 201 }));
 		const pdfs: any[] = [];
