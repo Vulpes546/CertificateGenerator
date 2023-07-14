@@ -1,10 +1,8 @@
 import "./MainPage.css";
-import parseData from "../../utils/parseData";
-import generatePdfs from "../../utils/generatePdfs";
-import downloadZip from "../../utils/downloadZip";
 import Button from "../Button/Button";
 import { useState } from "react";
 import React from "react";
+import Utils from "../../utils/Utils";
 
 export default function MainPage() {
 	const [state, setState] = useState({
@@ -37,7 +35,7 @@ export default function MainPage() {
 		const file = e.target.files[0];
 		try {
 			setState((prevState) => ({ ...prevState, statusCode: 101 }));
-			parseData(file).then((res) => {
+			Utils.parseData(file).then((res) => {
 				setState((prevState) => ({
 					...prevState,
 					statusCode: 100,
@@ -69,7 +67,7 @@ export default function MainPage() {
 						type: "application/vnd.ms-excel",
 					});
 					console.log("File generated", file);
-					return parseData(file);
+					return Utils.parseData(file);
 				})
 				.then((data) => {
 					console.log("Data parsed", data);
@@ -139,14 +137,14 @@ export default function MainPage() {
 			<p className="statusBar">{renderStatus()}</p>
 			<Button
 				text="Wygeneruj PDF"
-				clickHandler={() => generatePdfs(state.data, setState)}
+				clickHandler={() => Utils.generatePdfs(state.data, setState)}
 				className="btnLeft"
 				disabled={state.statusCode % 100 !== 0 ? true : false}
 			/>
 			<Button
 				text="Pobierz plik .zip"
 				className="btnRight"
-				clickHandler={() => downloadZip(state.pdfs, setState, state.data)}
+				clickHandler={() => Utils.downloadZip(state.pdfs, setState, state.data)}
 				disabled={
 					state.statusCode !== 200 && state.statusCode !== 300 ? true : false
 				}
