@@ -1,5 +1,6 @@
 import "./MainPage.css";
 import Button from "../Button/Button";
+// @ts-ignore
 import { useState } from "react";
 import React from "react";
 import Utils from "../../utils/Utils";
@@ -17,42 +18,42 @@ export default function MainPage() {
 			certNumber: {
 				x: 210,
 				y: 430,
-				fontSize: 16
+				fontSize: 16,
 			},
 			courseName: {
 				x: 38,
 				y: 555,
-				fontSize: 22
+				fontSize: 22,
 			},
 			courseDate: {
 				x: 40,
 				y: 190,
-				fontSize: 11
+				fontSize: 11,
 			},
 			gender: {
 				x: 38,
 				y: 385,
-				fontSize: 11
+				fontSize: 11,
 			},
 			name: {
 				x: 38,
 				y: 350,
-				fontSize: 24
+				fontSize: 24,
 			},
 			birth: {
 				x: 38,
 				y: 330,
-				fontSize: 11
+				fontSize: 11,
 			},
 			date: {
 				x: 400,
 				y: 60,
-				fontSize: 11
-			}
-		}
+				fontSize: 11,
+			},
+		},
 	});
 
-	const [formData, setFormData] = useState<IPdfCoords | undefined>();
+	const [formData, setFormData] = useState<IPdfCoords>({ ...state.pdfCoords });
 
 	/**
 		status codes:
@@ -153,17 +154,17 @@ export default function MainPage() {
 	};
 
 	function showDialog() {
-		setState((prev) => ({...prev, showDialog: true}))
+		setFormData({ ...state.pdfCoords });
+		setState((prev) => ({ ...prev, showDialog: true }));
 	}
 
 	function hideDialog() {
-		setState((prev) => ({...prev, showDialog: false}))
+		setState((prev) => ({ ...prev, showDialog: false }));
 	}
 
 	return (
 		<>
 			<main>
-				
 				<Button
 					text="Dodaj szablon"
 					clickHandler={() => {}}
@@ -199,69 +200,387 @@ export default function MainPage() {
 				<p className="statusBar">{renderStatus()}</p>
 				<Button
 					text="Wygeneruj PDF"
-					clickHandler={() => Utils.generatePdfs(state.data, setState)}
+					clickHandler={() =>
+						Utils.generatePdfs(state.data, setState, state.pdfCoords)
+					}
 					className="btnLeft"
 					disabled={state.statusCode % 100 !== 0 ? true : false}
 				/>
 				<Button
 					text="Pobierz plik .zip"
 					className="btnRight"
-					clickHandler={() => Utils.downloadZip(state.pdfs, setState, state.data)}
+					clickHandler={() =>
+						Utils.downloadZip(state.pdfs, setState, state.data)
+					}
 					disabled={
 						state.statusCode !== 200 && state.statusCode !== 300 ? true : false
 					}
 				/>
 			</main>
 			<dialog open={state.showDialog}>
-			<ul>
-				<li>Numer certyfikatu</li>
 				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+					<li>Numer certyfikatu</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.certNumber.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										certNumber: {
+											...prev.certNumber,
+											x: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.certNumber.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										certNumber: {
+											...prev.certNumber,
+											y: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.certNumber.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										certNumber: {
+											...prev.certNumber,
+											fontSize: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Nazwa kursu</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseName.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseName: {
+											...prev.courseName,
+											x: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseName.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseName: {
+											...prev.courseName,
+											y: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseName.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseName: {
+											...prev.courseName,
+											fontSize: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Data kursu</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseDate.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseDate: {
+											...prev.courseDate,
+											x: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseDate.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseDate: {
+											...prev.courseDate,
+											y: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.courseDate.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										courseDate: {
+											...prev.courseDate,
+											fontSize: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Pan/Pani</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.gender.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										gender: { ...prev.gender, x: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.gender.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										gender: { ...prev.gender, y: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.gender.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										gender: {
+											...prev.gender,
+											fontSize: Number(e.target.value),
+										},
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Imię i nazwisko</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.name.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										name: { ...prev.name, x: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.name.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										name: { ...prev.name, y: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.name.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										name: { ...prev.name, fontSize: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Data urodzenia</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.birth.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										birth: { ...prev.birth, x: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.birth.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										birth: { ...prev.birth, y: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.birth.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										birth: { ...prev.birth, fontSize: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+					</ul>
+					<li>Data wydania certyfikatu</li>
+					<ul>
+						<li>
+							<label>X:</label>
+							<input
+								type="number"
+								required
+								value={formData.date.x}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										date: { ...prev.date, x: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Y:</label>
+							<input
+								type="number"
+								required
+								value={formData.date.y}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										date: { ...prev.date, y: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+						<li>
+							<label>Rozmiar czcionki:</label>
+							<input
+								type="number"
+								required
+								value={formData.date.fontSize}
+								onChange={(e) => {
+									setFormData((prev) => ({
+										...prev,
+										date: { ...prev.date, fontSize: Number(e.target.value) },
+									}));
+								}}
+							/>
+						</li>
+					</ul>
 				</ul>
-				<li>Nazwa kursu</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-				<li>Data kursu</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-				<li>Pan/Pani</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-				<li>Imię</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-				<li>Dane urodzenia</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-				<li>Data wydania certyfikatu</li>
-				<ul>
-					<li><label>X:</label><input type="number"/></li>
-					<li><label>Y:</label><input type="number"/></li>
-					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
-				</ul>
-			</ul>
-			<br />
-			<button onClick={hideDialog}>
-				Zamknij
-			</button>
-		</dialog>
-	</>
+				<br />
+				<button
+					onClick={() => {
+						if (
+							window.confirm("Czy na pewno chcesz ustawić nowe koordynaty?")
+						) {
+							setState((prev) => ({ ...prev, pdfCoords: { ...formData } }));
+							hideDialog();
+						}
+					}}
+				>
+					Ustaw
+				</button>
+				<br />
+				<button onClick={hideDialog}>Zamknij bez ustawiania</button>
+			</dialog>
+		</>
 	);
 }

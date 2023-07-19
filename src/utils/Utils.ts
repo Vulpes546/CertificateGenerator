@@ -3,8 +3,11 @@ import fontkit from "@pdf-lib/fontkit";
 import { rgb } from "pdf-lib";
 import JSZip from "jszip";
 import * as XLSX from "xlsx";
+// @ts-ignore
 import { Dispatch, SetStateAction } from "react";
 import IState from "../interfaces/IState";
+import IPdfCoords from "../interfaces/IPdfCoords";
+import IPdfCoord from "../interfaces/IPdfCoord";
 
 export default class Utils {
 	static async downloadZip(
@@ -30,7 +33,7 @@ export default class Utils {
 		return setState((state) => ({ ...state, statusCode: 300 }));
 	}
 
-	static async generatePdf(data: string[]) {
+	static async generatePdf(data: string[], coord: IPdfCoords) {
 		const url = "../../data/certyfikat_szablon_1_EZN_pusty.pdf";
 		const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer());
 		const pdfDoc = await PDFDocument.load(existingPdfBytes);
@@ -43,67 +46,59 @@ export default class Utils {
 		const bahnschriftFont = await pdfDoc.embedFont(bahnschriftFontBytes);
 
 		// certificate number
-
-		let fontSize = 16;
 		firstPage.drawText("Nr " + data[9], {
-			x: 210,
-			y: 430,
-			size: fontSize,
+			x: coord.certNumber.x,
+			y: coord.certNumber.y,
+			size: coord.certNumber.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.5, 0.5, 0.5),
 		});
 
 		// course name
 
-		fontSize = 22;
 		firstPage.drawText(data[2].toUpperCase(), {
-			x: 38,
-			y: 555,
-			size: fontSize,
+			x: coord.courseName.x,
+			y: coord.courseName.y,
+			size: coord.courseName.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.5, 0.5, 0.5),
 		});
 
 		// course date(s)
 
-		fontSize = 11;
 		firstPage.drawText(data[7].toUpperCase(), {
-			x: 40,
-			y: 190,
-			size: fontSize,
+			x: coord.courseDate.x,
+			y: coord.courseDate.y,
+			size: coord.courseDate.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.5, 0.5, 0.5),
 		});
 
 		// Mr/Ms
 
-		fontSize = 11;
 		firstPage.drawText("Pan(i)", {
-			x: 38,
-			y: 385,
-			size: fontSize,
+			x: coord.gender.x,
+			y: coord.gender.y,
+			size: coord.gender.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.5, 0.5, 0.5),
 		});
 
 		// name
 
-		fontSize = 24;
 		firstPage.drawText(`${data[0].toUpperCase()} ${data[1].toUpperCase()}`, {
-			x: 38,
-			y: 350,
-			size: fontSize,
+			x: coord.name.x,
+			y: coord.name.y,
+			size: coord.name.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.375, 0.375, 0.375),
 		});
 
 		// date and place of birth
-
-		fontSize = 11;
 		firstPage.drawText(`ur. ${data[3]} w ${data[4]}`, {
-			x: 38,
-			y: 330,
-			size: fontSize,
+			x: coord.birth.x,
+			y: coord.birth.y,
+			size: coord.birth.fontSize,
 			font: bahnschriftFont,
 			color: rgb(0.5, 0.5, 0.5),
 		});
@@ -128,16 +123,14 @@ export default class Utils {
 			"listopada",
 			"grudnia",
 		];
-
-		fontSize = 11;
 		firstPage.drawText(
 			`Toruń, ${date.getDate()} ${
 				monthNames[date.getMonth()]
 			} ${date.getFullYear()} r.`,
 			{
-				x: 400,
-				y: 60,
-				size: fontSize,
+				x: coord.date.x,
+				y: coord.date.y,
+				size: coord.date.fontSize,
 				font: bahnschriftFont,
 				color: rgb(0.5, 0.5, 0.5),
 			}
@@ -149,14 +142,15 @@ export default class Utils {
 
 	static async generatePdfs(
 		data: string[][],
-		setState: Dispatch<SetStateAction<IState>>
+		setState: Dispatch<SetStateAction<IState>>,
+		coords: IPdfCoords[]
 	) {
 		console.log(data);
 		setState((state) => ({ ...state, statusCode: 201 }));
 		const pdfs: any[] = [];
 		try {
 			for (let i = 0; i < data.length; i++) {
-				const pdf = await this.generatePdf(data[i]);
+				const pdf = await this.generatePdf(data[i], coords[i]);
 				pdfs.push(pdf);
 			}
 		} catch (error) {
