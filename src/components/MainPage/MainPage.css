@@ -47,4 +47,25 @@ dialog {
 	backdrop-filter: blur(10px);
 	border-radius: 5px;
 	border: none;
+	padding: 10px;
+}
+
+dialog ul {
+	list-style: none;
+}
+
+dialog li {
+	display: flex;
+	justify-content: space-between;
+}
+
+dialog>ul>ul {
+	border-radius: 5px;
+	padding: 10px;
+	background-color: rgba(255, 255, 255, 0.5);
+	margin-bottom: 5px;
+}
+
+dialog>ul {
+	padding: 10px;
 }

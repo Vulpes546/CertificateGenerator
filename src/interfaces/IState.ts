@@ -1,4 +1,5 @@
 import { PDFDocument } from "pdf-lib";
+import IPdfCoords from "./IPdfCoords";
 
 export default interface IState {
 	pdfs: PDFDocument[];
@@ -6,4 +7,5 @@ export default interface IState {
 	url: string;
 	statusCode: number;
 	showDialog: boolean;
+	pdfCoords: IPdfCoords;
 }

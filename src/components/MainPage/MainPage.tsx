@@ -4,6 +4,7 @@ import { useState } from "react";
 import React from "react";
 import Utils from "../../utils/Utils";
 import IState from "../../interfaces/IState";
+import IPdfCoords from "../../interfaces/IPdfCoords";
 
 export default function MainPage() {
 	const [state, setState] = useState<IState>({
@@ -11,8 +12,47 @@ export default function MainPage() {
 		data: [] as string[][],
 		url: "" as string,
 		statusCode: 1,
-		showDialog: false
+		showDialog: false,
+		pdfCoords: {
+			certNumber: {
+				x: 210,
+				y: 430,
+				fontSize: 16
+			},
+			courseName: {
+				x: 38,
+				y: 555,
+				fontSize: 22
+			},
+			courseDate: {
+				x: 40,
+				y: 190,
+				fontSize: 11
+			},
+			gender: {
+				x: 38,
+				y: 385,
+				fontSize: 11
+			},
+			name: {
+				x: 38,
+				y: 350,
+				fontSize: 24
+			},
+			birth: {
+				x: 38,
+				y: 330,
+				fontSize: 11
+			},
+			date: {
+				x: 400,
+				y: 60,
+				fontSize: 11
+			}
+		}
 	});
+
+	const [formData, setFormData] = useState<IPdfCoords | undefined>();
 
 	/**
 		status codes:
@@ -121,61 +161,107 @@ export default function MainPage() {
 	}
 
 	return (
-		<main>
-			<dialog open={state.showDialog}>
-				Placeholderowy dialog
-				<br />
-				<button onClick={hideDialog}>
-					Zamknij
-				</button>
-			</dialog>
-			<Button
-				text="Dodaj szablon"
-				clickHandler={() => {}}
-				className="btnTemplate"
-			/>
-			<Button
-				text="Podaj koordynaty"
-				clickHandler={showDialog}
-				className="btnCoords"
-			/>
-			<input
-				className="upload"
-				id="upload"
-				type="file"
-				name="files[]"
-				onChange={handleUpload}
-				accept=".csv, .xls, .xlsx"
-			/>
-			<div id="urlForm">
-				<input
-					className="link"
-					id="link"
-					type="url"
-					name="url[]"
-					value={state.url}
-					onChange={handleUrlChange}
+		<>
+			<main>
+				
+				<Button
+					text="Dodaj szablon"
+					clickHandler={() => {}}
+					className="btnTemplate"
 				/>
-				<button value={state.url} onClick={fetchXlsx}>
-					Pobierz
-				</button>
-			</div>
+				<Button
+					text="Podaj koordynaty"
+					clickHandler={showDialog}
+					className="btnCoords"
+				/>
+				<input
+					className="upload"
+					id="upload"
+					type="file"
+					name="files[]"
+					onChange={handleUpload}
+					accept=".csv, .xls, .xlsx"
+				/>
+				<div id="urlForm">
+					<input
+						className="link"
+						id="link"
+						type="url"
+						name="url[]"
+						value={state.url}
+						onChange={handleUrlChange}
+					/>
+					<button value={state.url} onClick={fetchXlsx}>
+						Pobierz
+					</button>
+				</div>
 
-			<p className="statusBar">{renderStatus()}</p>
-			<Button
-				text="Wygeneruj PDF"
-				clickHandler={() => Utils.generatePdfs(state.data, setState)}
-				className="btnLeft"
-				disabled={state.statusCode % 100 !== 0 ? true : false}
-			/>
-			<Button
-				text="Pobierz plik .zip"
-				className="btnRight"
-				clickHandler={() => Utils.downloadZip(state.pdfs, setState, state.data)}
-				disabled={
-					state.statusCode !== 200 && state.statusCode !== 300 ? true : false
-				}
-			/>
-		</main>
+				<p className="statusBar">{renderStatus()}</p>
+				<Button
+					text="Wygeneruj PDF"
+					clickHandler={() => Utils.generatePdfs(state.data, setState)}
+					className="btnLeft"
+					disabled={state.statusCode % 100 !== 0 ? true : false}
+				/>
+				<Button
+					text="Pobierz plik .zip"
+					className="btnRight"
+					clickHandler={() => Utils.downloadZip(state.pdfs, setState, state.data)}
+					disabled={
+						state.statusCode !== 200 && state.statusCode !== 300 ? true : false
+					}
+				/>
+			</main>
+			<dialog open={state.showDialog}>
+			<ul>
+				<li>Numer certyfikatu</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Nazwa kursu</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Data kursu</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Pan/Pani</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Imię</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Dane urodzenia</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+				<li>Data wydania certyfikatu</li>
+				<ul>
+					<li><label>X:</label><input type="number"/></li>
+					<li><label>Y:</label><input type="number"/></li>
+					<li><label>Rozmiar czcionki:</label><input type="number"/></li>
+				</ul>
+			</ul>
+			<br />
+			<button onClick={hideDialog}>
+				Zamknij
+			</button>
+		</dialog>
+	</>
 	);
 }
