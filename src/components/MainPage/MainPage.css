@@ -1,7 +1,7 @@
 main {
 	display: grid;
 	grid-template: auto auto auto/ 1fr 1fr;
-	grid-template-areas: "upload upload" "link link" "status status" "btnLeft btnRight";
+	grid-template-areas: "templateInput btnCoords" "upload upload" "link link" "status status" "btnLeft btnRight";
 	gap: 10px;
 }
 
@@ -17,6 +17,11 @@ main {
 
 .link {
 	flex-grow: 1;
+}
+
+.coords {
+	flex-shrink: 1;
+	flex-direction: row;
 }
 
 .statusBar {
@@ -35,4 +40,36 @@ main {
 
 .btnRight {
 	grid-area: btnRight;
+}
+
+dialog {
+	background-color: rgba(200, 200, 200, 0.5);
+	backdrop-filter: blur(10px);
+	border-radius: 5px;
+	border: none;
+	padding: 10px;
+}
+
+dialog ul {
+	list-style: none;
+}
+
+dialog li {
+	display: flex;
+	justify-content: space-between;
+}
+
+dialog > ul > ul {
+	border-radius: 5px;
+	padding: 10px;
+	background-color: rgba(255, 255, 255, 0.5);
+	margin-bottom: 5px;
+}
+
+dialog > ul {
+	padding: 10px;
+}
+
+.templateInput {
+	grid-area: templateInput;
 }
