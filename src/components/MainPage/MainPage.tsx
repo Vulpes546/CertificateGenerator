@@ -11,6 +11,7 @@ export default function MainPage() {
 		data: [] as string[][],
 		url: "" as string,
 		statusCode: 1,
+		showDialog: false
 	});
 
 	/**
@@ -111,8 +112,33 @@ export default function MainPage() {
 		return "Nie wybrano pliku";
 	};
 
+	function showDialog() {
+		setState((prev) => ({...prev, showDialog: true}))
+	}
+
+	function hideDialog() {
+		setState((prev) => ({...prev, showDialog: false}))
+	}
+
 	return (
 		<main>
+			<dialog open={state.showDialog}>
+				Placeholderowy dialog
+				<br />
+				<button onClick={hideDialog}>
+					Zamknij
+				</button>
+			</dialog>
+			<Button
+				text="Dodaj szablon"
+				clickHandler={() => {}}
+				className="btnTemplate"
+			/>
+			<Button
+				text="Podaj koordynaty"
+				clickHandler={showDialog}
+				className="btnCoords"
+			/>
 			<input
 				className="upload"
 				id="upload"

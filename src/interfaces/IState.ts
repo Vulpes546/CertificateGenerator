@@ -5,4 +5,5 @@ export default interface IState {
 	data: string[][];
 	url: string;
 	statusCode: number;
+	showDialog: boolean;
 }
