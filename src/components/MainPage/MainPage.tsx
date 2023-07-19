@@ -1,15 +1,15 @@
 import "./MainPage.css";
-import parseData from "../../functions/parseData";
-import generatePdfs from "../../functions/generatePdfs";
-import downloadZip from "../../functions/downloadZip";
 import Button from "../Button/Button";
 import { useState } from "react";
 import React from "react";
+import Utils from "../../utils/Utils";
+import IState from "../../interfaces/IState";
 
 export default function MainPage() {
-	const [state, setState] = useState({
+	const [state, setState] = useState<IState>({
 		pdfs: [],
 		data: [] as string[][],
+		url: "" as string,
 		statusCode: 1,
 	});
 
@@ -25,6 +25,8 @@ export default function MainPage() {
 			300 - zip file generated
 			301 - zip file generation in progress
 			302 - zip file generation failed
+			401 - fetching file in progress
+			402 - fetching file failed
 	**/
 
 	function handleUpload(e) {
@@ -34,7 +36,7 @@ export default function MainPage() {
 		const file = e.target.files[0];
 		try {
 			setState((prevState) => ({ ...prevState, statusCode: 101 }));
-			parseData(file).then((res) => {
+			Utils.parseData(file).then((res) => {
 				setState((prevState) => ({
 					...prevState,
 					statusCode: 100,
@@ -45,6 +47,37 @@ export default function MainPage() {
 		} catch (err) {
 			console.error(err);
 			return setState((prevState) => ({ ...prevState, statusCode: 102 }));
+		}
+	}
+
+	function handleUrlChange(e) {
+		setState((prev) => ({ ...prev, url: e.target.value }));
+	}
+
+	function fetchXlsx() {
+		setState((prev) => ({ ...prev, statusCode: 401 }));
+		try {
+			fetch(state.url)
+				.then((res) => {
+					console.log("Response recieved", res);
+					return res.blob();
+				})
+				.then((blob) => {
+					console.log("Blob generated", blob);
+					const file = new File([blob], "data.xls", {
+						type: "application/vnd.ms-excel",
+					});
+					console.log("File generated", file);
+					return Utils.parseData(file);
+				})
+				.then((data) => {
+					console.log("Data parsed", data);
+					return setState((prev) => ({ ...prev, data: data }));
+				})
+				.finally(() => setState((prev) => ({ ...prev, statusCode: 100 })));
+		} catch (error) {
+			console.error(error);
+			setState((prev) => ({ ...prev, statusCode: 402 }));
 		}
 	}
 
@@ -70,6 +103,10 @@ export default function MainPage() {
 				return "Generowanie pliku .zip w toku";
 			case 302:
 				return "Generowanie pliku .zip nie powiodło się";
+			case 401:
+				return "Pobieranie pliku";
+			case 402:
+				return "Pobieranie pliku nie powiodło się";
 		}
 		return "Nie wybrano pliku";
 	};
@@ -84,17 +121,31 @@ export default function MainPage() {
 				onChange={handleUpload}
 				accept=".csv, .xls, .xlsx"
 			/>
+			<div id="urlForm">
+				<input
+					className="link"
+					id="link"
+					type="url"
+					name="url[]"
+					value={state.url}
+					onChange={handleUrlChange}
+				/>
+				<button value={state.url} onClick={fetchXlsx}>
+					Pobierz
+				</button>
+			</div>
+
 			<p className="statusBar">{renderStatus()}</p>
 			<Button
 				text="Wygeneruj PDF"
-				clickHandler={() => generatePdfs(state.data, setState)}
+				clickHandler={() => Utils.generatePdfs(state.data, setState)}
 				className="btnLeft"
 				disabled={state.statusCode % 100 !== 0 ? true : false}
 			/>
 			<Button
 				text="Pobierz plik .zip"
 				className="btnRight"
-				clickHandler={() => downloadZip(state.pdfs, setState, state.data)}
+				clickHandler={() => Utils.downloadZip(state.pdfs, setState, state.data)}
 				disabled={
 					state.statusCode !== 200 && state.statusCode !== 300 ? true : false
 				}

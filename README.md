@@ -1,7 +1,7 @@
 # CertificateGenerator
 
 ## Setup and running development
-**To run the code you need to have [node.js](https://nodejs.org/) installed.**
+**To run the code you need to have [node.js](https://nodejs.org/){:target="\_blank"} installed.**
 
 To install project, first you have to run this command in main directory:
 
