@@ -8,4 +8,5 @@ export default interface IState {
 	statusCode: number;
 	showDialog: boolean;
 	pdfCoords: IPdfCoords;
+	pdfTemplate: Blob;
 }

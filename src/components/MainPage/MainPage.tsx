@@ -1,7 +1,7 @@
 import "./MainPage.css";
 import Button from "../Button/Button";
 // @ts-ignore
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import React from "react";
 import Utils from "../../utils/Utils";
 import IState from "../../interfaces/IState";
@@ -52,6 +52,17 @@ export default function MainPage() {
 			},
 		},
 	});
+
+	useEffect(() => {
+		console.log("Fetching pdf template");
+		const url = "/data/certyfikat_szablon_1_EZN_pusty.pdf";
+		let blob: Blob;
+		fetch(url)
+			.then((response) => response.blob())
+			.then((blob) => {
+				setState((prev) => ({ ...prev, pdfTemplate: blob }));
+			});
+	}, []);
 
 	const [formData, setFormData] = useState<IPdfCoords>({ ...state.pdfCoords });
 
@@ -165,24 +176,36 @@ export default function MainPage() {
 	return (
 		<>
 			<main>
-				<Button
-					text="Dodaj szablon"
-					clickHandler={() => {}}
-					className="btnTemplate"
-				/>
+				<label className="templateImput">
+					Szablon pdf:{" "}
+					<input
+						type="file"
+						accept=".pdf"
+						onChange={(e) => {
+							if (e.target.files) {
+								const blob: Blob = e.target.files[0];
+								setState((prev) => ({ ...prev, pdfTemplate: blob }));
+							}
+						}}
+					/>
+				</label>
 				<Button
 					text="Podaj koordynaty"
 					clickHandler={showDialog}
 					className="btnCoords"
 				/>
-				<input
-					className="upload"
-					id="upload"
-					type="file"
-					name="files[]"
-					onChange={handleUpload}
-					accept=".csv, .xls, .xlsx"
-				/>
+				<label>
+					Plik xlsx/csv z danymi:{" "}
+					<input
+						className="upload"
+						id="upload"
+						type="file"
+						name="files[]"
+						onChange={handleUpload}
+						accept=".csv, .xls, .xlsx"
+					/>
+				</label>
+
 				<div id="urlForm">
 					<input
 						className="link"
@@ -201,7 +224,12 @@ export default function MainPage() {
 				<Button
 					text="Wygeneruj PDF"
 					clickHandler={() =>
-						Utils.generatePdfs(state.data, setState, state.pdfCoords)
+						Utils.generatePdfs(
+							state.data,
+							setState,
+							state.pdfCoords,
+							state.pdfTemplate
+						)
 					}
 					className="btnLeft"
 					disabled={state.statusCode % 100 !== 0 ? true : false}

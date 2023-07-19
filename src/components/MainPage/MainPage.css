@@ -1,7 +1,7 @@
 main {
 	display: grid;
 	grid-template: auto auto auto/ 1fr 1fr;
-	grid-template-areas: "btnTemplate btnCoords" "upload upload" "link link" "status status" "btnLeft btnRight";
+	grid-template-areas: "templateInput btnCoords" "upload upload" "link link" "status status" "btnLeft btnRight";
 	gap: 10px;
 }
 
@@ -59,13 +59,17 @@ dialog li {
 	justify-content: space-between;
 }
 
-dialog>ul>ul {
+dialog > ul > ul {
 	border-radius: 5px;
 	padding: 10px;
 	background-color: rgba(255, 255, 255, 0.5);
 	margin-bottom: 5px;
 }
 
-dialog>ul {
+dialog > ul {
 	padding: 10px;
+}
+
+.templateInput {
+	grid-area: templateInput;
 }

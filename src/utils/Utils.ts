@@ -8,6 +8,7 @@ import { Dispatch, SetStateAction } from "react";
 import IState from "../interfaces/IState";
 import IPdfCoords from "../interfaces/IPdfCoords";
 import IPdfCoord from "../interfaces/IPdfCoord";
+import { arrayBuffer } from "stream/consumers";
 
 export default class Utils {
 	static async downloadZip(
@@ -33,17 +34,21 @@ export default class Utils {
 		return setState((state) => ({ ...state, statusCode: 300 }));
 	}
 
-	static async generatePdf(data: string[], coord: IPdfCoords) {
-		const url = "../../data/certyfikat_szablon_1_EZN_pusty.pdf";
-		const existingPdfBytes = await fetch(url).then((res) => res.arrayBuffer());
-		const pdfDoc = await PDFDocument.load(existingPdfBytes);
+	static async generatePdf(data: string[], coord: IPdfCoords, template: Blob) {
+		let pdfArrayBuffer = await template.arrayBuffer();
+		console.log(typeof template);
+		console.log(pdfArrayBuffer);
+		const pdfDoc = await PDFDocument.load(pdfArrayBuffer);
 		pdfDoc.registerFontkit(fontkit);
+
 		const pages = pdfDoc.getPages();
 		const firstPage = pages[0];
 		const bahnschriftFontBytes = await fetch(
 			"../../data/fonts/BAHNSCHRIFT.TTF"
 		).then((res) => res.arrayBuffer());
 		const bahnschriftFont = await pdfDoc.embedFont(bahnschriftFontBytes);
+
+		console.table(coord);
 
 		// certificate number
 		firstPage.drawText("Nr " + data[9], {
@@ -143,14 +148,15 @@ export default class Utils {
 	static async generatePdfs(
 		data: string[][],
 		setState: Dispatch<SetStateAction<IState>>,
-		coords: IPdfCoords[]
+		coords: IPdfCoords,
+		template: Blob
 	) {
-		console.log(data);
+		console.log(coords);
 		setState((state) => ({ ...state, statusCode: 201 }));
 		const pdfs: any[] = [];
 		try {
 			for (let i = 0; i < data.length; i++) {
-				const pdf = await this.generatePdf(data[i], coords[i]);
+				const pdf = await this.generatePdf(data[i], coords, template);
 				pdfs.push(pdf);
 			}
 		} catch (error) {
