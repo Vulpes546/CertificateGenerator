@@ -51,6 +51,7 @@ export default function MainPage() {
 				fontSize: 11,
 			},
 		},
+		pdfTemplate: new Blob(),
 	});
 
 	useEffect(() => {
